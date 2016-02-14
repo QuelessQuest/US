@@ -42,13 +42,4 @@ public class Game {
     public void save() {
 
     }
-
-    public Player addPlayer(String name) {
-
-        Player player = new Player(name);
-        players.add(player);
-
-        db.addPlayer(id, name);
-        return player;
-    }
 }

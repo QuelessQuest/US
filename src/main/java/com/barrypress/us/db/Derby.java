@@ -277,10 +277,11 @@ public class Derby {
     public String loadPlayers(Integer gameID) {
 
         String returnString = "";
-        String query = "select active_player, phase, player_one, color_one, (select p.name from PLAYERS p, GAME g where p.id = g.player_one) as p1name, " +
-                "player_two, color_two, (select p.name from PLAYERS p, GAME g where p.id = g.player_two) as p2name, " +
-                "player_three, color_three, (select p.name from PLAYERS p, GAME g where p.id = g.player_three) as p3name, " +
-                "player_four, color_four, (select p.name from PLAYERS p, GAME g where p.id = g.player_four) as p4name " +
+        String query = "SELECT player_one, player_two, player_three, player_four, active_player, phase, " +
+                "(select u.name from USERS u, PLAYERS p, GAME g where p.id = g.player_one and p.user_id = u.id) as p1name, " +
+                "(select u.name from USERS u, PLAYERS p, GAME g where p.id = g.player_two and p.user_id = u.id) as p2name, " +
+                "(select u.name from USERS u, PLAYERS p, GAME g where p.id = g.player_three and p.user_id = u.id) as p3name, " +
+                "(select u.name from USERS u, PLAYERS p, GAME g where p.id = g.player_four and p.user_id = u.id) as p4name " +
                 "from GAME g where g.id = ?";
 
         PreparedStatement pStmt;
@@ -290,25 +291,46 @@ public class Derby {
             pStmt.setInt(1, gameID);
             ResultSet rs = pStmt.executeQuery();
 
-            if (rs.next()) {
-                Players players = new Players();
-                players.setPlayerOne(rs.getString("player_one"));
-                players.setPlayerTwo(rs.getString("player_two"));
-                players.setPlayerThree(rs.getString("player_three"));
-                players.setPlayerFour(rs.getString("player_four"));
-                players.setActivePlayer(rs.getString("active_player"));
-                players.setState(rs.getString("phase"));
-                players.setP1Name(rs.getString("p1name"));
-                players.setP2Name(rs.getString("p2name"));
-                players.setP3Name(rs.getString("p3name"));
-                players.setP4Name(rs.getString("p4name"));
-                players.setColorOne(rs.getString("color_one"));
-                players.setColorTwo(rs.getString("color_two"));
-                players.setColorThree(rs.getString("color_three"));
-                players.setColorFour(rs.getString("color_four"));
+            String q2 = "SELECT id, color, wealth, prestige, favor, permits, vocations, offices FROM PLAYERS WHERE id = ?";
 
-                returnString = new Gson().toJson(players, Players.class);
+            Players players = new Players();
+            if (rs.next()) {
+                Player player1 = new Player(rs.getInt("player_one"), rs.getString("p1name"));
+                Player player2 = new Player(rs.getInt("player_two"), rs.getString("p2name"));
+                Player player3 = new Player(rs.getInt("player_three"), rs.getString("p3name"));
+                Player player4 = new Player(rs.getInt("player_four"), rs.getString("p4name"));
+
+                players.setActivePlayer(rs.getInt("active_player"));
+                players.setPhase(rs.getString("phase"));
+                players.getPlayers().add(player1);
+                players.getPlayers().add(player2);
+                players.getPlayers().add(player3);
+                players.getPlayers().add(player4);
             }
+
+            rs.close();
+            pStmt.close();
+            pStmt = conn.prepareStatement(q2);
+
+            for (Player player : players.getPlayers()) {
+                pStmt.setInt(1, player.getId());
+                rs = pStmt.executeQuery();
+
+                if (rs.next()) {
+                    player.setColor(rs.getInt("color"));
+                    player.setWealth(rs.getInt("wealth"));
+                    player.setPrestige(rs.getInt("prestige"));
+                    player.setFavor(rs.getInt("favor"));
+                    player.setCards(rs.getString("permits"));
+                    player.setVocations(rs.getString("vocations"));
+                    player.setPoliticians(rs.getString("offices"));
+                }
+
+                rs.close();
+            }
+
+            returnString = new Gson().toJson(players, Players.class);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

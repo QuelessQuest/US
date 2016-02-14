@@ -1,26 +1,20 @@
 package com.barrypress.us.object;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Player {
 
     private String name;
+    private Integer id;
+    private Integer color;
     private Integer wealth;
     private Integer prestige;
-    private List<Vocation> vocations;
-    private List<Card> cards;
-    private List<Politician> politicians;
-    private Card favor;
+    private String vocations;
+    private String cards;
+    private String politicians;
+    private Integer favor;
 
-    public Player(String name) {
+    public Player(Integer id, String name) {
+        this.id = id;
         this.name = name;
-        wealth = 0;
-        prestige = 0;
-        vocations = new ArrayList<>();
-        cards = new ArrayList<>();
-        politicians = new ArrayList<>();
-        favor = null;
     }
 
     public String getName() {
@@ -29,6 +23,22 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getColor() {
+        return color;
+    }
+
+    public void setColor(Integer color) {
+        this.color = color;
     }
 
     public Integer getWealth() {
@@ -47,35 +57,35 @@ public class Player {
         this.prestige = prestige;
     }
 
-    public List<Vocation> getVocations() {
+    public String getVocations() {
         return vocations;
     }
 
-    public void setVocations(List<Vocation> vocations) {
+    public void setVocations(String vocations) {
         this.vocations = vocations;
     }
 
-    public List<Card> getCards() {
+    public String getCards() {
         return cards;
     }
 
-    public void setCards(List<Card> cards) {
+    public void setCards(String cards) {
         this.cards = cards;
     }
 
-    public List<Politician> getPoliticians() {
+    public String getPoliticians() {
         return politicians;
     }
 
-    public void setPoliticians(List<Politician> politicians) {
+    public void setPoliticians(String politicians) {
         this.politicians = politicians;
     }
 
-    public Card getFavor() {
+    public Integer getFavor() {
         return favor;
     }
 
-    public void setFavor(Card favor) {
+    public void setFavor(Integer favor) {
         this.favor = favor;
     }
 }
