@@ -277,10 +277,10 @@ public class Derby {
     public String loadPlayers(Integer gameID) {
 
         String returnString = "";
-        String query = "select active_player, phase, player_one, (select p.name from PLAYERS p, GAME g where p.id = g.player_one) as p1name, " +
-                "player_two, (select p.name from PLAYERS p, GAME g where p.id = g.player_two) as p2name, " +
-                "player_three, (select p.name from PLAYERS p, GAME g where p.id = g.player_three) as p3name, " +
-                "player_four, (select p.name from PLAYERS p, GAME g where p.id = g.player_four) as p4name " +
+        String query = "select active_player, phase, player_one, color_one, (select p.name from PLAYERS p, GAME g where p.id = g.player_one) as p1name, " +
+                "player_two, color_two, (select p.name from PLAYERS p, GAME g where p.id = g.player_two) as p2name, " +
+                "player_three, color_three, (select p.name from PLAYERS p, GAME g where p.id = g.player_three) as p3name, " +
+                "player_four, color_four, (select p.name from PLAYERS p, GAME g where p.id = g.player_four) as p4name " +
                 "from GAME g where g.id = ?";
 
         PreparedStatement pStmt;
@@ -302,6 +302,10 @@ public class Derby {
                 players.setP2Name(rs.getString("p2name"));
                 players.setP3Name(rs.getString("p3name"));
                 players.setP4Name(rs.getString("p4name"));
+                players.setColorOne(rs.getString("color_one"));
+                players.setColorTwo(rs.getString("color_two"));
+                players.setColorThree(rs.getString("color_three"));
+                players.setColorFour(rs.getString("color_four"));
 
                 returnString = new Gson().toJson(players, Players.class);
             }

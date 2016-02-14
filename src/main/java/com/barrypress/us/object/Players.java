@@ -12,6 +12,10 @@ public class Players {
     private String p2Name;
     private String p3Name;
     private String p4Name;
+    private String colorOne;
+    private String colorTwo;
+    private String colorThree;
+    private String colorFour;
 
     public String getPlayerOne() {
         return playerOne;
@@ -91,5 +95,37 @@ public class Players {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getColorOne() {
+        return colorOne;
+    }
+
+    public void setColorOne(String colorOne) {
+        this.colorOne = colorOne;
+    }
+
+    public String getColorTwo() {
+        return colorTwo;
+    }
+
+    public void setColorTwo(String colorTwo) {
+        this.colorTwo = colorTwo;
+    }
+
+    public String getColorThree() {
+        return colorThree;
+    }
+
+    public void setColorThree(String colorThree) {
+        this.colorThree = colorThree;
+    }
+
+    public String getColorFour() {
+        return colorFour;
+    }
+
+    public void setColorFour(String colorFour) {
+        this.colorFour = colorFour;
     }
 }
