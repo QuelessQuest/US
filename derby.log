@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Sun Feb 14 16:38:51 EST 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0152-e1b8-cf4e-00000db858a8 
-on database directory /Users/lbarry/Documents/us/USDb with class loader sun.misc.Launcher$AppClassLoader@511d50c0 
+Sat Feb 20 04:49:41 EST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0152-fe15-b32c-00000da9c910 
+on database directory /Users/lbarry/Documents/us/USDb with class loader sun.misc.Launcher$AppClassLoader@14dad5dc 
 Loaded from file:/Users/lbarry/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_45-b14
 user.dir=/Users/lbarry/IdeaProjects/US
 os.name=Mac OS X
 os.arch=x86_64
-os.version=10.10.4
+os.version=10.11.3
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

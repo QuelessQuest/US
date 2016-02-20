@@ -1,19 +1,23 @@
 package com.barrypress.us.object;
 
-import com.barrypress.us.util.Constants;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class Card {
 
     private String name;
-    private List<Constants.Zone> zones;
     private Integer permits;
     private Boolean election;
     private Integer wealth;
     private Integer prestige;
-    private Vocation vocation;
-    private Class effect;
+    private List<Vocation> vocations;
+    private String effect;
+    private List<Integer> permitType;
+
+    public Card() {
+        permitType = new ArrayList<>();
+        vocations = new ArrayList<>();
+    }
 
     public String getName() {
         return name;
@@ -21,14 +25,6 @@ public class Card {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Constants.Zone> getZones() {
-        return zones;
-    }
-
-    public void setZones(List<Constants.Zone> zones) {
-        this.zones = zones;
     }
 
     public Integer getPermits() {
@@ -63,19 +59,27 @@ public class Card {
         this.prestige = prestige;
     }
 
-    public Vocation getVocation() {
-        return vocation;
+    public List<Vocation> getVocations() {
+        return vocations;
     }
 
-    public void setVocation(Vocation vocation) {
-        this.vocation = vocation;
+    public void setVocation(List<Vocation> vocations) {
+        this.vocations = vocations;
     }
 
-    public Class getEffect() {
+    public String getEffect() {
         return effect;
     }
 
-    public void setEffect(Class effect) {
+    public void setEffect(String effect) {
         this.effect = effect;
+    }
+
+    public List<Integer> getPermitType() {
+        return permitType;
+    }
+
+    public void setPermitType(List<Integer> permitType) {
+        this.permitType = permitType;
     }
 }

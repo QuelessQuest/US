@@ -3,6 +3,7 @@ package com.barrypress.us.db;
 import com.barrypress.us.object.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.*;
@@ -30,6 +31,89 @@ public class Derby {
         }
     }
 
+    public String getCards(Integer deck, String items) {
+
+        String query = "SELECT C.NAME, C.PERMITS, C.ELECTION, C.WEALTH, C.PRESTIGE, V.NAME AS VNAMES, C.VOCATION_VALUE, C.EFFECT, C.CARD_TYPE, C.PERMIT_TYPE " +
+                "FROM CARDS C, VOCATIONS V WHERE C.CARD_TYPE = ? AND C.VOCATION = V.ID AND C.ID IN (" + items + ")";
+
+        PreparedStatement pStmt;
+        String returnString = "";
+        List<Card> cards = new ArrayList<>();
+
+        try {
+            pStmt = conn.prepareStatement(query);
+            pStmt.setInt(1, deck);
+
+            ResultSet rs = pStmt.executeQuery();
+
+            while (rs.next()) {
+                Card card = new Card();
+                card.setName(rs.getString("NAME"));
+                card.setPermits(rs.getInt("PERMITS"));
+                card.setElection(rs.getBoolean("ELECTION"));
+                card.setWealth(rs.getInt("WEALTH"));
+                card.setPrestige(rs.getInt("PRESTIGE"));
+                card.setEffect(rs.getString("EFFECT"));
+
+                List<Vocation> vocations = new ArrayList<>();
+                List<String> vocationValues = Arrays.asList(String.valueOf(rs.getInt("VOCATION_VALUE")).split(""));
+                List<String> vocationNames = Arrays.asList(rs.getString("VNAMES").split(","));
+
+                for (int i = 0; i < vocationNames.size(); i++) {
+                    Vocation vocation = new Vocation();
+                    vocation.setName(vocationNames.get(i));
+                    vocation.setValue(Integer.parseInt(vocationValues.get(i)));
+                    vocations.add(vocation);
+                }
+
+                card.setVocation(vocations);
+                card.setPermitType(Arrays.asList(String.valueOf(rs.getInt("PERMIT_TYPE")).split("")).stream().map(Integer::valueOf).collect(Collectors.toList()));
+                cards.add(card);
+            }
+
+            returnString = new Gson().toJson(cards, List.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return returnString;
+    }
+
+    public String getDecks(Integer gameId) {
+
+        String query = "SELECT DRAW, DISCARD, CARD_TYPE FROM DECKS WHERE GAME_ID = ?";
+
+        PreparedStatement pStmt;
+        List<Deck> decks = new ArrayList<>();
+
+        try {
+            pStmt = conn.prepareStatement(query);
+            pStmt.setInt(1, gameId);
+
+            ResultSet rs = pStmt.executeQuery();
+
+            while(rs.next()) {
+                String draw = rs.getString("DRAW");
+                String discard = rs.getString("DISCARD");
+
+                Deck deck = new Deck();
+                deck.setType(rs.getInt("CARD_TYPE"));
+                deck.setDraw(Arrays.asList(draw.split(",")).stream().map(Integer::valueOf).collect(Collectors.toList()));
+                deck.setDiscard(StringUtils.isEmpty(discard) ? new ArrayList<>() : Arrays.asList(discard.split(",")).stream().map(Integer::valueOf).collect(Collectors.toList()));
+
+                decks.add(deck);
+            }
+
+            rs.close();
+            pStmt.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new Gson().toJson(decks, List.class);
+    }
     public List<Integer> getCardsByName(Integer type, String name) {
 
         List<Integer> cards = new ArrayList<>();
@@ -114,41 +198,6 @@ public class Derby {
         }
 
         return cards;
-    }
-
-    public Card getCard(Integer id) {
-
-        Card card = new Card();
-
-        String query = "SELECT NAME, PERMITS, ELECTION, WEALTH, PRESTIGE, VOCATION, VOCATION_VALUE, EFFECT FROM CARDS WHERE ID = ?";
-
-        PreparedStatement pStmt;
-
-        try {
-            pStmt = conn.prepareStatement(query);
-            pStmt.setInt(1, id);
-
-            ResultSet rs = pStmt.executeQuery();
-
-            if (rs.next()) {
-                card.setName(rs.getString("NAME"));
-                card.setPermits(rs.getInt("PERMITS"));
-                card.setElection(rs.getInt("ELECTION") != 0);
-                card.setWealth(rs.getInt("WEALTH"));
-                card.setPrestige(rs.getInt("PRESTIGE"));
-                card.setEffect(Class.forName(rs.getString("EFFECT")));
-                Vocation vocation = new Vocation();
-                vocation.setName(rs.getString("VOCATION"));
-                vocation.setValue(rs.getInt("VOCATION_VALUE"));
-                card.setVocation(vocation);
-            }
-            rs.close();
-            pStmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return card;
     }
 
     @SuppressWarnings("unchecked")

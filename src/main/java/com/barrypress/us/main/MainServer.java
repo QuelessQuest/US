@@ -12,6 +12,7 @@ import java.util.HashSet;
 
 public class MainServer extends Application {
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
 
         Component component = new Component();

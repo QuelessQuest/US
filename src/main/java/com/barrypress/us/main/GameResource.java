@@ -3,11 +3,14 @@ package com.barrypress.us.main;
 import com.barrypress.us.db.Derby;
 import com.barrypress.us.object.Game;
 import com.barrypress.us.util.Constants;
+import org.restlet.Request;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+
+import java.util.Map;
 
 public class GameResource extends ServerResource {
 
@@ -43,6 +46,15 @@ public class GameResource extends ServerResource {
                 case "Players":
                     json = db.loadPlayers(gameId);
                     break;
+                case "Decks":
+                    json = db.getDecks(gameId);
+                    break;
+                case "Cards":
+                    Request request = getRequest();
+                    Map<String, String> requestMap = request.getOriginalRef().getQueryAsForm().getValuesMap();
+                    Integer deck = Integer.parseInt(requestMap.get("deck"));
+                    String items = requestMap.get("items");
+                    json = db.getCards(deck, items);
                 default:
             }
         }
