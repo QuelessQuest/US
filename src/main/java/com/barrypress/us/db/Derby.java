@@ -31,6 +31,54 @@ public class Derby {
         }
     }
 
+    public String getAllCards() {
+
+        String query = "SELECT C.NAME, C.PERMITS, C.ELECTION, C.WEALTH, C.PRESTIGE, V.NAME AS VNAMES, C.VOCATION_VALUE, C.EFFECT, C.CARD_TYPE, C.PERMIT_TYPE " +
+                "FROM CARDS C, VOCATIONS V WHERE C.VOCATION = V.ID";
+
+        Statement stmt;
+        String returnString = "";
+        List<Card> cards = new ArrayList<>();
+
+        try {
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                Card card = new Card();
+                card.setName(rs.getString("NAME"));
+                card.setPermits(rs.getInt("PERMITS"));
+                card.setElection(rs.getBoolean("ELECTION"));
+                card.setWealth(rs.getInt("WEALTH"));
+                card.setPrestige(rs.getInt("PRESTIGE"));
+                card.setEffect(rs.getString("EFFECT"));
+
+                List<Vocation> vocations = new ArrayList<>();
+                List<String> vocationValues = Arrays.asList(String.valueOf(rs.getInt("VOCATION_VALUE")).split(""));
+                List<String> vocationNames = Arrays.asList(rs.getString("VNAMES").split(","));
+
+                for (int i = 0; i < vocationNames.size(); i++) {
+                    Vocation vocation = new Vocation();
+                    vocation.setName(vocationNames.get(i));
+                    vocation.setValue(Integer.parseInt(vocationValues.get(i)));
+                    vocations.add(vocation);
+                }
+
+                card.setVocation(vocations);
+                card.setPermitType(Arrays.asList(String.valueOf(rs.getInt("PERMIT_TYPE")).split("")).stream().map(Integer::valueOf).collect(Collectors.toList()));
+                cards.add(card);
+            }
+
+            returnString = new Gson().toJson(cards, List.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return returnString;
+    }
+
     public String getCards(Integer deck, String items) {
 
         String query = "SELECT C.NAME, C.PERMITS, C.ELECTION, C.WEALTH, C.PRESTIGE, V.NAME AS VNAMES, C.VOCATION_VALUE, C.EFFECT, C.CARD_TYPE, C.PERMIT_TYPE " +

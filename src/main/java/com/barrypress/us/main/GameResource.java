@@ -55,6 +55,9 @@ public class GameResource extends ServerResource {
                     Integer deck = Integer.parseInt(requestMap.get("deck"));
                     String items = requestMap.get("items");
                     json = db.getCards(deck, items);
+                    break;
+                case "AllCards":
+                    json = db.getAllCards();
                 default:
             }
         }
